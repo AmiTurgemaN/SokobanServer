@@ -1,0 +1,1 @@
+src/main/resources is a required folder, adding this comment to ensure it will be imported everytime.

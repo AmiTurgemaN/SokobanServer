@@ -26,21 +26,21 @@ public class SokobanClientHandler implements ClientHandler {
 		try {
 			ois = new ObjectInputStream(socket.getInputStream());
 			writer = new PrintWriter(socket.getOutputStream());
-			
-			Level level = (Level)ois.readObject();
-			String name = level.getLevelName();
-			String userName = level.getUserName();
-			
-			AdminModel.getInstance().addClient(userName, socket);
-			
-			String solution = getSolutionFromService(name,level.getLevelString());
-			if (solution == null) {
-				// call Strips ...
-				// save the solution via the service
+			String userName="";
+			Level level=null;
+			if(ois.readObject() instanceof String)
+			{
+				userName = ois.readObject().toString();
+				AdminModel.getInstance().addClient(userName, socket);
+				return;
 			}
-			writer.println(solution);
-			writer.flush();
-			
+			else if(ois.readObject() instanceof Level)
+			{
+				level = (Level)ois.readObject();
+				String solution = getSolutionFromService(level.getLevelName(),level.getLevelString());
+				writer.println(solution);
+				writer.flush();
+			}
 		} catch (IOException e) {			
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
@@ -55,36 +55,33 @@ public class SokobanClientHandler implements ClientHandler {
 				e.printStackTrace();
 			}
 		}		
-
 	}
-	
-    private String getSolutionFromService(String name,String levelString) {
-    	String solution="";
-    	String url = "http://localhost:8080/SokobanWebService/webapi/solutions/" + name;    	
-    	Client client = ClientBuilder.newClient();
-		WebTarget webTarget = client.target(url);	
-        Response response = webTarget.request(MediaType.TEXT_PLAIN).get(Response.class);        
-        if (response.getStatus() == 200) {
-        	solution = response.readEntity(String.class);
-        	System.out.println("solution: " + solution);
-        	return solution;
-        } 
-        com.sun.jersey.api.client.Client webClient = com.sun.jersey.api.client.Client.create();
-		WebResource webResource = webClient.resource(url);
 
+	private String getSolutionFromService(String name,String levelString) {
+		String solution="";
+		String url = "http://localhost:8080/SokobanWebService/webapi/solutions/" + name;    	
+		Client client = ClientBuilder.newClient();
+		WebTarget webTarget = client.target(url);	
+		Response response = webTarget.request(MediaType.TEXT_PLAIN).get(Response.class);        
+		if (response.getStatus() == 200) {
+			solution = response.readEntity(String.class);
+			System.out.println("solution: " + solution);
+			return solution;
+		} 
+		com.sun.jersey.api.client.Client webClient = com.sun.jersey.api.client.Client.create();
+		WebResource webResource = webClient.resource(url);
 		ClientResponse response2 = webResource.type("text/plain").post(ClientResponse.class, levelString);
-		
+
 		if (response2.getStatus() == 201) {
 			solution = response2.getEntity(String.class);
-        	System.out.println("solution: " + solution);
-        	return solution;
+			System.out.println("solution: " + solution);
+			return solution;
 		}
-		
-        else if(solution.equals("Unsolvable")) {        	
-        	System.out.println("Unable to solve the level");
-        }
-        return null;
-    }
+		else if(solution.equals("Unsolvable")) {        	
+			System.out.println("Unable to solve the level");
+		}
+		return null;
+	}
 
 
 }
