@@ -45,7 +45,8 @@ public class App extends Application
 	@Override
 	public void start(Stage stage) throws Exception {
 		Parent root = FXMLLoader.load(getClass().getResource("AdminDashboard.fxml"));
-        Scene scene = new Scene(root, 200, 200);
+        Scene scene = new Scene(root, 250, 250);
+        scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		stage.getIcons().add(new Image(new FileInputStream("resources/admin.png")));
 		stage.setTitle("Sokoban Server");
 		stage.setResizable(false);

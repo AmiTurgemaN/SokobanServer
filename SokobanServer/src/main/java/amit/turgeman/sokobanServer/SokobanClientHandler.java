@@ -59,6 +59,7 @@ public class SokobanClientHandler implements ClientHandler {
 	}
 
 	private String getSolutionFromService(String name,String levelString) {
+		System.out.println(name);
 		String solution="";
 		String url = "http://localhost:8080/SokobanWebService/webapi/solutions/" + name;    	
 		Client client = ClientBuilder.newClient();
@@ -81,7 +82,8 @@ public class SokobanClientHandler implements ClientHandler {
 		else if(solution.equals("Unsolvable")) {        	
 			System.out.println("Unable to solve level "+name);
 		}
-		return null;
+		System.out.println(solution);
+		return solution;
 	}
 
 

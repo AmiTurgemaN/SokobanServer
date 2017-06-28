@@ -23,7 +23,10 @@ public class AdminModel {
 	public List<String> getClients() {
 		List<String> clients = new ArrayList<>();
 		for (String client : connectedClients.keySet())
-			clients.add(client);
+		{
+			if(!connectedClients.get(client).isClosed())
+				clients.add(client);
+		}
 		return clients;
 	}
 	
