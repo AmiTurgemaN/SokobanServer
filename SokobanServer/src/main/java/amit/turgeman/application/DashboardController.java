@@ -15,6 +15,9 @@ import javafx.scene.control.ListView;
 
 public class DashboardController implements Initializable {
 
+	public DashboardController() {
+	}
+	
     @FXML
     private Button button;
     
@@ -29,17 +32,30 @@ public class DashboardController implements Initializable {
     protected ListProperty<String> listProperty = new SimpleListProperty<>();
 
     @FXML
-    private void handleButtonAction(ActionEvent event) {
+    private void disconnectClient(ActionEvent event) {
+    	String selectedName = myListView.getSelectionModel().getSelectedItem().toString();
+    	model.disconnectClient(selectedName);
+    	updateList();
+    }
+    
+    @FXML
+    private void refresh(ActionEvent event) {
+    	updateList();
+    }
+    
+    @FXML
+    private void disconnectAllClients(ActionEvent event) {
+    	model.disconnectAllClients();
     	updateList();
     }
 
 	@SuppressWarnings("unchecked")
 	@Override
     public void initialize(URL url, ResourceBundle rb) {
-      
     	model = AdminModel.getInstance();      
-        myListView.itemsProperty().bind(listProperty);
+        myListView.itemsProperty().bindBidirectional(listProperty);
         listProperty.set(FXCollections.observableArrayList(model.getClients()));
+        
     }
     
     private void updateList() {

@@ -12,7 +12,6 @@ public class AdminModel {
 			new HashMap<String, Socket>();
 	
 	private static final AdminModel instance = new AdminModel();
-	private AdminModel() {}
 	public static AdminModel getInstance() {
 		return instance;
 	}
@@ -32,8 +31,20 @@ public class AdminModel {
 		Socket socket = connectedClients.get(userName);
 		try {
 			socket.close();
+			connectedClients.remove(userName);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	public void disconnectAllClients() {
+		for(Socket s : connectedClients.values())
+		{
+			try {
+				s.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		connectedClients.clear();
 	}
 }

@@ -5,11 +5,15 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="amit.turgeman.application.DashboardController">
 	 <children>
-        <Button fx:id="button" layoutX="25.0" layoutY="165.0" onAction="#handleButtonAction" prefHeight="26.0" prefWidth="150.0" text="Disconnect" />
-      <ListView fx:id="myListView" layoutX="25.0" layoutY="20.0" prefHeight="130" prefWidth="150.0" />
+        <Button fx:id="disconnectButton" layoutX="15.0" layoutY="150.0" onAction="#disconnectClient" prefHeight="26.0" prefWidth="80.0" text="Disconnect" />
+        <Button fx:id="refreshButton" layoutX="100.0" layoutY="150.0" onAction="#refresh" prefHeight="26.0" prefWidth="80.0" text="Refresh" />
+        <Button fx:id="disconnectAllButton" layoutX="15.0" layoutY="180.0" onAction="#disconnectAllClients" prefHeight="26.0" prefWidth="165.0" text="Disconnect all" />
+      <ListView fx:id="myListView" layoutX="15.0" layoutY="20.0" prefHeight="130" prefWidth="165.0" />
     </children>
 </AnchorPane>
 

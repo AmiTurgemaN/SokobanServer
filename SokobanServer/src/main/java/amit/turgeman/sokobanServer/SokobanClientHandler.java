@@ -2,7 +2,7 @@ package amit.turgeman.sokobanServer;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.PrintWriter;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 import javax.ws.rs.client.Client;
@@ -22,24 +22,28 @@ public class SokobanClientHandler implements ClientHandler {
 	@Override
 	public void handleClient(Socket socket) {
 		ObjectInputStream ois = null;
-		PrintWriter writer = null;
+		ObjectOutputStream oos = null;
 		try {
+			oos = new ObjectOutputStream(socket.getOutputStream());
+			oos.flush();
 			ois = new ObjectInputStream(socket.getInputStream());
-			writer = new PrintWriter(socket.getOutputStream());
-			String userName="";
+			String inputString="";
 			Level level=null;
-			if(ois.readObject() instanceof String)
+			Object inputObject = ois.readObject();
+			if(inputObject instanceof String)
 			{
-				userName = ois.readObject().toString();
-				AdminModel.getInstance().addClient(userName, socket);
-				return;
+				inputString = (String)inputObject;
+				if (inputString.startsWith("USERNAME"))
+				{
+					AdminModel.getInstance().addClient(inputString.replaceAll("USERNAME", ""), socket);
+				}
 			}
 			else if(ois.readObject() instanceof Level)
 			{
 				level = (Level)ois.readObject();
 				String solution = getSolutionFromService(level.getLevelName(),level.getLevelString());
-				writer.println(solution);
-				writer.flush();
+				oos.writeObject(solution);
+				oos.flush();
 			}
 		} catch (IOException e) {			
 			e.printStackTrace();
@@ -49,8 +53,8 @@ public class SokobanClientHandler implements ClientHandler {
 			try {
 				if (ois != null)
 					ois.close();
-				if (writer != null)
-					writer.close();
+				if (oos != null)
+					oos.close();
 			} catch (IOException e) {				
 				e.printStackTrace();
 			}
