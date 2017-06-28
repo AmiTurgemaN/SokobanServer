@@ -9,26 +9,19 @@ public class Level implements Serializable {
 	public Level() {
 	}
 	
-	public Level(String levelName, String userName, String levelString) {
+	public Level(String levelName, String levelString) {
 		this.levelName = levelName;
-		this.userName = userName;
 		this.levelString = levelString;
 	}
 	
-	private String levelName;
-	private String userName;
-	private String levelString;
+	public String levelName;
+	public String levelString;
+	
 	public String getLevelName() {
 		return levelName;
 	}
 	public void setLevelName(String levelName) {
 		this.levelName = levelName;
-	}
-	public String getUserName() {
-		return userName;
-	}
-	public void setUserName(String userName) {
-		this.userName = userName;
 	}
 	public String getLevelString() {
 		return levelString;

@@ -21,7 +21,7 @@ public class App extends Application
 {
     public static void main( String[] args )
     {
-        final Server server = new Server(5554, new SokobanClientHandler());
+        final Server server = new Server(5555, new SokobanClientHandler());
         try {
         	new Thread(new Runnable() {
 

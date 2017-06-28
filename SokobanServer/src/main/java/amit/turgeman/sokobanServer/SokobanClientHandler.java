@@ -19,45 +19,42 @@ import model.data.beans.*;
 
 public class SokobanClientHandler implements ClientHandler {
 
+	private ObjectOutputStream oos;
+	private ObjectInputStream ois;
+
 	@Override
 	public void handleClient(Socket socket) {
-		ObjectInputStream ois = null;
-		ObjectOutputStream oos = null;
 		try {
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			oos.flush();
 			ois = new ObjectInputStream(socket.getInputStream());
 			String inputString="";
 			Level level=null;
-			Object inputObject = ois.readObject();
-			if(inputObject instanceof String)
+			Object inputObject;
+			while(true)
 			{
-				inputString = (String)inputObject;
-				if (inputString.startsWith("USERNAME"))
+				inputObject = ois.readObject();
+				if(inputObject instanceof String)
 				{
-					AdminModel.getInstance().addClient(inputString.replaceAll("USERNAME", ""), socket);
+					inputString = (String)inputObject;
+					if (inputString.startsWith("USERNAME"))
+					{
+						AdminModel.getInstance().addClient(inputString.replaceAll("USERNAME", ""), socket);
+						continue;
+					}
 				}
-			}
-			else if(ois.readObject() instanceof Level)
-			{
-				level = (Level)ois.readObject();
-				String solution = getSolutionFromService(level.getLevelName(),level.getLevelString());
-				oos.writeObject(solution);
-				oos.flush();
+				else if(inputObject instanceof Level)
+				{
+					level = (Level)inputObject;
+					String solution = getSolutionFromService(level.getLevelName(),level.getLevelString());
+					oos.writeObject(solution);
+					oos.flush();
+				}
 			}
 		} catch (IOException e) {			
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				if (ois != null)
-					ois.close();
-				if (oos != null)
-					oos.close();
-			} catch (IOException e) {				
-				e.printStackTrace();
-			}
 		}		
 	}
 
@@ -82,7 +79,7 @@ public class SokobanClientHandler implements ClientHandler {
 			return solution;
 		}
 		else if(solution.equals("Unsolvable")) {        	
-			System.out.println("Unable to solve the level");
+			System.out.println("Unable to solve level "+name);
 		}
 		return null;
 	}
