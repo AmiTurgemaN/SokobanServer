@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -11,11 +12,15 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
 import amit.turgeman.application.AdminModel;
 import model.data.beans.*;
+import model.data.beans.hibernate.Game;
+import model.data.beans.hibernate.GameManager;
+import model.data.beans.hibernate.HibernateUtil;
 
 public class SokobanClientHandler implements ClientHandler {
 
@@ -42,6 +47,15 @@ public class SokobanClientHandler implements ClientHandler {
 						AdminModel.getInstance().addClient(inputString.replaceAll("USERNAME", ""), socket);
 						continue;
 					}
+					else if (inputString.startsWith("REQUEST"))
+					{	
+						inputString=inputString.replaceAll("REQUEST", "");
+						ArrayList<Game> recordsArrayList = HibernateUtil.getWorldWideRecordsAsArrayList();
+						oos.writeObject(recordsArrayList);
+						oos.flush();
+						continue;
+					}
+					
 				}
 				else if(inputObject instanceof Level)
 				{
@@ -49,6 +63,14 @@ public class SokobanClientHandler implements ClientHandler {
 					String solution = getSolutionFromService(level.getLevelName(),level.getLevelString());
 					oos.writeObject(solution);
 					oos.flush();
+					continue;
+				}
+				else if (inputObject instanceof Game)
+				{	
+					Game game = (Game)inputObject;
+					GameManager gm = new GameManager(game);
+					gm.addGame();
+					continue;
 				}
 			}
 		} catch (IOException e) {			

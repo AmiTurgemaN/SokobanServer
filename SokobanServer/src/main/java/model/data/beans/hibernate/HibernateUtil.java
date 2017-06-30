@@ -1,5 +1,6 @@
-package amit.turgeman.db;
+package model.data.beans.hibernate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -114,5 +115,13 @@ public class HibernateUtil {
 				levelRecordsList.add(g);
 		}
 		return levelRecordsList;
+	}
+
+	public static ArrayList<Game> getWorldWideRecordsAsArrayList() {
+		ObservableList<Game> observableList = getWorldWideRecords();
+		ArrayList<Game> arrayList = new ArrayList<>();
+		for(Game g : observableList)
+			arrayList.add(g);
+		return arrayList;
 	}
 }

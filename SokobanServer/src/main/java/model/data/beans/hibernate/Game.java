@@ -1,11 +1,14 @@
-package amit.turgeman.db;
+package model.data.beans.hibernate;
 
+import java.io.Serializable;
 import java.text.DecimalFormat;
 
 import javax.persistence.*;
 
 @Entity(name="Games")
-public class Game {
+public class Game implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int gameID;

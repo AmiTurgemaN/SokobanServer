@@ -1,4 +1,4 @@
-package amit.turgeman.db;
+package model.data.beans.hibernate;
 
 import java.util.List;
 import java.util.logging.Logger;
