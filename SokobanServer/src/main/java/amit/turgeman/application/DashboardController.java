@@ -16,41 +16,44 @@ public class DashboardController implements Initializable {
 	public DashboardController() {
 	}
 
-    @SuppressWarnings("rawtypes")
+	@SuppressWarnings("rawtypes")
 	@FXML
-    private ListView myListView;
-    private AdminModel model;
+	private ListView myListView;
+	private AdminModel model;
 
-    protected ListProperty<String> listProperty = new SimpleListProperty<>();
+	protected ListProperty<String> listProperty = new SimpleListProperty<>();
 
-    @FXML
-    private void disconnectClient(ActionEvent event) {
-    	String selectedName = myListView.getSelectionModel().getSelectedItem().toString();
-    	model.disconnectClient(selectedName);
-    	updateList();
-    }
-    
-    @FXML
-    private void refresh(ActionEvent event) {
-    	updateList();
-    }
-    
-    @FXML
-    private void disconnectAllClients(ActionEvent event) {
-    	model.disconnectAllClients();
-    	updateList();
-    }
+	@FXML
+	private void disconnectClient(ActionEvent event) {
+		if(myListView.getSelectionModel().getSelectedIndex()!=-1)
+		{
+			String selectedName = myListView.getSelectionModel().getSelectedItem().toString();
+			model.disconnectClient(selectedName);
+			updateList();
+		}
+	}
+
+	@FXML
+	private void refresh(ActionEvent event) {
+		updateList();
+	}
+
+	@FXML
+	private void disconnectAllClients(ActionEvent event) {
+		model.disconnectAllClients();
+		updateList();
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-    public void initialize(URL url, ResourceBundle rb) {
-    	model = AdminModel.getInstance();      
-        myListView.itemsProperty().bindBidirectional(listProperty);
-        listProperty.set(FXCollections.observableArrayList(model.getClients()));
-        
-    }
-    
-    private void updateList() {
-    	listProperty.set(FXCollections.observableArrayList(model.getClients()));
-    }
+	public void initialize(URL url, ResourceBundle rb) {
+		model = AdminModel.getInstance();      
+		myListView.itemsProperty().bindBidirectional(listProperty);
+		listProperty.set(FXCollections.observableArrayList(model.getClients()));
+
+	}
+
+	private void updateList() {
+		listProperty.set(FXCollections.observableArrayList(model.getClients()));
+	}
 }
